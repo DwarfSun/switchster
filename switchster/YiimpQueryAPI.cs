@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace switchster {
   public class YiimpQueryAPI {
-    public string apiUrl;// = @"http://api.zergpool.com:8080/api/";
+    public string apiUrl;
     public YiimpQueryAPI(string _apiUrl = @"http://api.zergpool.com:8080/api/") {
       apiUrl = _apiUrl;
     }
@@ -17,58 +17,59 @@ namespace switchster {
       string json = "";
       HttpClient client = new HttpClient();
       var response = await client.GetAsync(queryString);
-      //dynamic data = null;
       if (response != null)
       {
-        //JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
         json = response.Content.ReadAsStringAsync().Result;
       }
+      else
+      {
+        //System.Console.Error.Write("Null response! ");
+      }
+      System.Console.WriteLine("Queried {0} -> {1} bytes returned.", queryString, json.Length);
       return json;
     }
 
-    public async void WalletStatus(string wallet) {
+    public async Task<YiimpWallet> WalletStatus(string wallet) {
+      YiimpWallet walletSimple = new YiimpWallet();
       string command = string.Format("wallet?address={0}", wallet);
-      dynamic results = await FetchData(command);
+      string results = await FetchData(command);
+      walletSimple = JsonConvert.DeserializeObject<YiimpWallet>(results);
+      return walletSimple;
     }
-    public async void WalletDetail(string wallet) {
+    public async Task<YiimpWalletDetail> WalletDetail(string wallet) {
+      YiimpWalletDetail walletDetail = new YiimpWalletDetail();
       string command = string.Format("walletEx?address={0}", wallet);
-      dynamic results = await FetchData(command);
+      string results = await FetchData(command);
+      walletDetail = JsonConvert.DeserializeObject<YiimpWalletDetail>(results);
+      return walletDetail;
     }
-    public async void PoolStatus() {
+    public async Task<Dictionary<string, YiimpStatus>> PoolStatus() {
+      Dictionary<string, YiimpStatus> statuses = new Dictionary<string, YiimpStatus>();
       string command = string.Format("status");
-      dynamic results = await FetchData(command);
+      string results = await FetchData(command);
+      statuses = JsonConvert.DeserializeObject<Dictionary<string, YiimpStatus>>(results);
+      return statuses;
     }
     public async Task<Dictionary<string, YiimpCurrency>> Currencies() {
       Dictionary<string, YiimpCurrency> currencies = new Dictionary<string, YiimpCurrency>();
       string command = string.Format("currencies");
       string results = await FetchData(command);
       currencies = JsonConvert.DeserializeObject<Dictionary<string, YiimpCurrency>>(results);
-/*
-        foreach (var result in results) {
-        YiimpCurrency currency = new YiimpCurrency();
-        currency.algo = result["algo"];
-        currency.port = result["port"];
-        currency.name = result["name"];
-        currency.height = result["height"];
-        currency.workers = result["workers"];
-        currency.shares = result["shares"];
-        currency.hashrate = result["hashrate"];
-        currency._24h_blocks = result["24h_blocks"];
-        currency._24h_btc = result["24h_btc"];
-        currency.lastblock = result["lastblock"];
-        currency.timesincelast = result["timesincelast"];
-        currencies.Add(currency);
-      }
-*/
       return currencies;
     }
-    public async void Blocks() {
+    public async Task<List<YiimpBlock>> Blocks() {
+      List<YiimpBlock> blocks = new List<YiimpBlock>();
       string command = string.Format("blocks");
-      dynamic results = await FetchData(command);
+      string results = await FetchData(command);
+      blocks = JsonConvert.DeserializeObject<List<YiimpBlock>>(results);
+      return blocks;
     }
-    public async void Miners() {
+    public async Task<List<YiimpMiner>> Miners() {
+      List<YiimpMiner> miners = new List<YiimpMiner>();
       string command = string.Format("miners");
-      dynamic results = await FetchData(command);
+      string results = await FetchData(command);
+      miners = JsonConvert.DeserializeObject<List<YiimpMiner>>(results);
+      return miners;
     }
   }
 }

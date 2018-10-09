@@ -3,8 +3,6 @@ using System.Numerics;
 using Newtonsoft.Json;
 namespace switchster {
   public class YiimpCurrency {
-/*
-*/
     public string algo;
     public long port;
     public string name;
@@ -12,7 +10,8 @@ namespace switchster {
     public double difficulty;
     public long workers;
     public long shares;
-    [JsonProperty("hashrate")] public string hashrate;
+    [JsonProperty("hashrate")] 
+    public string hashrate;
     public BigInteger Hashrate {
       get {
         BigInteger result = new BigInteger();
@@ -20,7 +19,8 @@ namespace switchster {
         return result;
       }
     }
-    [JsonProperty("network_hashrate")] public string network_hashrate;
+    [JsonProperty("network_hashrate")] 
+    public string network_hashrate;
     public BigInteger NetworkHashrate {
       get {
         BigInteger result = new BigInteger();
