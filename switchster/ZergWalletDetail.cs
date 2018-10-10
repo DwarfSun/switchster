@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace switchster {
-    public class YiimpWalletDetail : YiimpBalance {
+    public class ZergWalletDetail : YiimpBalance {
         [JsonProperty("paidtotal")]
         public double paidtotal;
         [JsonProperty("miners")]
-        List<YiimpWorker> miners;
+        List<ZergWorker> miners;
         [JsonProperty("payouts")]
-        List<YiimpTransaction> payouts;
+        List<ZergTransaction> payouts;
     }
 }

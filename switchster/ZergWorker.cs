@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 namespace switchster {
-  public class YiimpWorker : YiimpMiner {
+  public class ZergWorker : ZergMiner {
     [JsonProperty("password")]//: "d=96",
     public string password;
 		[JsonProperty("ID")]//: "",

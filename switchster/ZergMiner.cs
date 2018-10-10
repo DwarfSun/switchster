@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 namespace switchster {
-    public class YiimpMiner {
+    public class ZergMiner {
         [JsonProperty("algo")]//:"bcd",
         public string algo;
         [JsonProperty("version")]//:"t-rex\/0.6.10",

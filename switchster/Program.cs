@@ -9,14 +9,17 @@ namespace switchster
     static void Main(string[] args)
     {
       Console.WriteLine("Switchster v0.01 (BETA)");
-      YiimpServer zergpool = new YiimpServer(new YiimpServerDetails());
-      /*
+      ZergServer zergpool = new ZergServer(new YiimpServerDetails{
+        name = "ZergPool.com",
+        apiUrl = "http://api.zergpool.com:8080/api/"
+      });
       YiimpServer yiimpEu = new YiimpServer(new YiimpServerDetails{
         name = "Yiimp.EU",
         apiUrl = "http://api.yiimp.eu/api/"
-      });*/
+      });
+
       CryptoCompare cc = new CryptoCompare();
-      Console.WriteLine("BAL: {0} / {1} :TOT", zergpool.walletDetail.balance, zergpool.walletDetail.total);
+      Console.WriteLine("BAL: {0} / {1} :TOT", zergpool.wallet.balance, zergpool.wallet.total);
 /**/
       int fails = 0;
       while (zergpool.currencies.Count < 1 || cc.CoinList.Count < 1) {

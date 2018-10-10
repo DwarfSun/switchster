@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Numerics;
 using Newtonsoft.Json;
 namespace switchster {
-  public class YiimpBlock {
+  public class ZergBlock {
       [JsonProperty("symbol")]//:"SCS",
       public string symbol;
       [JsonProperty("time")]//:"1539058661",

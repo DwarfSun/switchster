@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 namespace switchster {
-  public class YiimpTransaction {
+  public class ZergTransaction {
       [JsonProperty("time")]//: "1529749163",
       private string _time;
       public long Time {
