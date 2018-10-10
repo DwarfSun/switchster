@@ -15,8 +15,10 @@ namespace switchster {
     const int COINLIST_REFRESHER_DELAY = 10 * MINUTE;
     const int RETRY_DELAY = 30 * SECOND;
     public Dictionary<string, CryptoCompareCoin> CoinList = new Dictionary<string, CryptoCompareCoin>();
+    public Dictionary<string, CryptoCompareCoinInfo> CoinsInfo = new Dictionary<string, CryptoCompareCoinInfo>();
     private CryptoCompareQueryAPI api = new CryptoCompareQueryAPI();
     Thread CoinListThread;
+    Thread CoinInfoThread;
     public CryptoCompare() {
       CoinListThread = new Thread(CoinListRefresher);
       CoinListThread.Start();
@@ -26,6 +28,10 @@ namespace switchster {
       do {
         try {
           CoinList = new CryptoCompareQueryAPI().CoinList().Result;
+          foreach(KeyValuePair<string, CryptoCompareCoin> coin in CoinList) {
+            CoinsInfo = new CryptoCompareQueryAPI().CoinInfo(coin.Key).Result;
+            Thread.Sleep(50);
+          }
           Thread.Sleep(COINLIST_REFRESHER_DELAY);
         }
         catch {

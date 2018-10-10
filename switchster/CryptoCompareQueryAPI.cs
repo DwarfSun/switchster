@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace switchster {
-  public class ResponseCoinList {
-
+  public class CryptoCompareCoinListResponse {
     [JsonProperty("Response")]
     public string response;
     [JsonProperty("Message")]
@@ -19,29 +18,38 @@ namespace switchster {
     [JsonProperty("BaseLinkUrl")]
     public string baseLinkUrl;
   }
-  public class CryptoCompareQueryAPI {
-    const string minApiUrl = @"https://min-api.cryptocompare.com/data";
-    const string oldApiUrl = @"https://www.cryptocompare.com/api/data";
+  public class CryptoCompareCoinInfoResponse {
+    [JsonProperty("Message")]
+    public string message;
+    [JsonProperty("Type")]
+    public int type;
+    [JsonProperty("Data")]
+    public List<CryptoCompareGeneralInfo> data;
+  }
+  public class CryptoCompareQueryAPI : QueryAPI {
+    const string minApiUrl = @"https://min-api.cryptocompare.com/data/";
+    const string oldApiUrl = @"https://www.cryptocompare.com/api/data/";
+    public async Task<Dictionary<string, CryptoCompareCoin>> CoinList() {
+      CryptoCompareCoinListResponse cryptoCompareCoinListResponse = new CryptoCompareCoinListResponse();
+      Dictionary<string, CryptoCompareCoin> coinlist = new Dictionary<string, CryptoCompareCoin>();
+      string command = string.Format("{0}all/coinlist", minApiUrl);
+      string response = await GetPublicDataJson(command);
+      cryptoCompareCoinListResponse = JsonConvert.DeserializeObject<CryptoCompareCoinListResponse>(response);
+      return cryptoCompareCoinListResponse.data;
+    }
 
-    private async Task<string> FetchData(string queryString)
-    {
-      string json = "";
-      HttpClient client = new HttpClient();
-      var response = await client.GetAsync(queryString);
-      if (response != null)
-      {
-        json = response.Content.ReadAsStringAsync().Result;
+    //https://min-api.cryptocompare.com/data/coin/generalinfo?fsyms=BTC,MLN,DASH&tsym=USD
+    public async Task<Dictionary<string, CryptoCompareCoinInfo>> CoinInfo(string coin) {
+      CryptoCompareCoinInfoResponse cryptoCompareCoinInfoResponse = new CryptoCompareCoinInfoResponse();
+      Dictionary<string, CryptoCompareCoinInfo> coinlist = new Dictionary<string, CryptoCompareCoinInfo>();
+      string command = string.Format("{0}coin/generalinfo?fsyms={1}&tsym=BTC", minApiUrl, coin);
+      string response = await GetPublicDataJson(command);
+      cryptoCompareCoinInfoResponse = JsonConvert.DeserializeObject<CryptoCompareCoinInfoResponse>(response);
+      foreach(CryptoCompareGeneralInfo g in cryptoCompareCoinInfoResponse.data){
+        coinlist.Add(g.coinInfo.symbol, g.coinInfo);
       }
-      return json;
+      return coinlist;
     }
     
-    public async Task<Dictionary<string, CryptoCompareCoin>> CoinList() {
-      ResponseCoinList responseCoinList = new ResponseCoinList();
-      Dictionary<string, CryptoCompareCoin> coinlist = new Dictionary<string, CryptoCompareCoin>();
-      string command = minApiUrl + "/all/coinlist";
-      string response = await FetchData(command);
-      responseCoinList = JsonConvert.DeserializeObject<ResponseCoinList>(response);
-      return responseCoinList.data;
-    }
   }
 }

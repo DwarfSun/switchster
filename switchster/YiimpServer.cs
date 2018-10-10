@@ -77,7 +77,8 @@ namespace switchster {
           }
           Thread.Sleep(CURRENCIES_REFRESHER_DELAY);
         }
-        catch {
+        catch (Exception e){
+          System.Console.Error.WriteLine(e.Message);
           System.Console.Error.WriteLine("Failed to refresh currencies data for {0}. Retrying in {1} seconds.", details.name, RETRY_DELAY/SECOND);
           Thread.Sleep(RETRY_DELAY);
         }
