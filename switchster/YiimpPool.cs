@@ -7,15 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace switchster {
-  public class YiimpServer {
-    protected const int SECOND = 1000;
-    protected const int MINUTE = 60 * SECOND;
-    protected const int HOUR = 60 * MINUTE;
-    protected const int DAY = 24 * HOUR;
-    protected const int WALLET_REFRESHER_DELAY = 30 * MINUTE;
-    protected const int STATUSES_REFRESHER_DELAY = HOUR;
-    protected const int CURRENCIES_REFRESHER_DELAY = 5 * MINUTE;
-    protected const int RETRY_DELAY = 30 * SECOND;
+  public class YiimpPool {
     protected YiimpServerDetails details;
     protected YiimpQueryAPI api;
     public YiimpWallet wallet = new YiimpWallet();
@@ -25,7 +17,7 @@ namespace switchster {
     protected Thread statusesThread;
     protected Thread currenciesThread;
     
-    public YiimpServer(YiimpServerDetails _details) {
+    public YiimpPool(YiimpServerDetails _details) {
       details = _details;
       api = new YiimpQueryAPI(details.apiUrl);
       walletThread = new Thread(WalletRefresher);
@@ -39,11 +31,11 @@ namespace switchster {
       do {
         try {
           wallet = api.WalletStatus(details.walletId).Result;
-          Thread.Sleep(WALLET_REFRESHER_DELAY);
+          Thread.Sleep(Switchster.WALLET_REFRESHER_DELAY);
         }
         catch {
-          System.Console.Error.WriteLine("Failed to refresh balance data for {0}. Retrying in {1} seconds.", details.name, RETRY_DELAY/SECOND);
-          Thread.Sleep(RETRY_DELAY);
+          System.Console.Error.WriteLine("Failed to refresh balance data for {0}. Retrying in {1} seconds.", details.name, Switchster.RETRY_DELAY/Switchster.SECOND);
+          Thread.Sleep(Switchster.RETRY_DELAY);
         }
       } while (Switchster.ALIVE);
     }
@@ -57,11 +49,11 @@ namespace switchster {
           else {
             throw new Exception();
           }
-          Thread.Sleep(STATUSES_REFRESHER_DELAY);
+          Thread.Sleep(Switchster.STATUSES_REFRESHER_DELAY);
         }
         catch {
-          System.Console.Error.WriteLine("Failed to refresh pool status data for {0}. Retrying in {1} seconds.", details.name, RETRY_DELAY/SECOND);
-          Thread.Sleep(RETRY_DELAY);
+          System.Console.Error.WriteLine("Failed to refresh pool status data for {0}. Retrying in {1} seconds.", details.name, Switchster.RETRY_DELAY/Switchster.SECOND);
+          Thread.Sleep(Switchster.RETRY_DELAY);
         }
       } while (Switchster.ALIVE);
     }
@@ -75,12 +67,12 @@ namespace switchster {
           else {
             throw new Exception();
           }
-          Thread.Sleep(CURRENCIES_REFRESHER_DELAY);
+          Thread.Sleep(Switchster.CURRENCIES_REFRESHER_DELAY);
         }
         catch (Exception e){
           System.Console.Error.WriteLine(e.Message);
-          System.Console.Error.WriteLine("Failed to refresh currencies data for {0}. Retrying in {1} seconds.", details.name, RETRY_DELAY/SECOND);
-          Thread.Sleep(RETRY_DELAY);
+          System.Console.Error.WriteLine("Failed to refresh currencies data for {0}. Retrying in {1} seconds.", details.name, Switchster.RETRY_DELAY/Switchster.SECOND);
+          Thread.Sleep(Switchster.RETRY_DELAY);
         }
       } while (Switchster.ALIVE);
     }

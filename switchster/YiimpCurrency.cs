@@ -23,5 +23,22 @@ namespace switchster {
     [JsonProperty("24h_btc")] public double _24h_btc;
     public long lastblock;
     public long timesincelast;
+/*
+    public SwitchsterCoin switchsterCoin(string Key) {
+      return new SwitchsterCoin {
+        symbol = Key,
+        name = this.name,
+        algorithm = null,
+        blockTime = this.BlockTime
+      };
+    }
+*/
+    public double BlockTime {
+      get {
+        return timesincelast / (height - lastblock);
+      }
+    }
+
+
   }
 }
